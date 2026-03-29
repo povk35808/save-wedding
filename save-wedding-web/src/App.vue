@@ -62,7 +62,7 @@
       </nav>
 
       <div class="p-5 border-t border-gray-100">
-        <button @click="handleLogout" class="flex items-center justify-center gap-3 w-full py-3.5 bg-red-50 text-red-600 rounded-2xl font-bold hover:bg-red-100 transition-colors">
+        <button @click="showLogoutModal = true" class="flex items-center justify-center gap-3 w-full py-3.5 bg-red-50 text-red-600 rounded-2xl font-bold hover:bg-red-100 transition-colors">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
           ចាកចេញ
         </button>
@@ -74,7 +74,7 @@
         <h1 class="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Save-Wedding</h1>
       </header>
 
-      <div class="flex-1 overflow-y-auto p-4 sm:p-6 md:p-10 pb-32 md:pb-10 hide-scrollbar relative">
+      <div class="flex-1 overflow-y-auto p-0 sm:p-6 md:p-10 pb-32 md:pb-10 hide-scrollbar relative">
         <router-view></router-view>
       </div>
     </main>
@@ -117,12 +117,32 @@
            <span class="text-[9px] font-extrabold tracking-wide">ការកំណត់</span>
         </div>
 
-        <div @click="handleLogout" class="flex flex-col items-center justify-center w-[20%] h-full text-red-400 hover:text-red-500 transition-colors cursor-pointer">
+        <div @click="showLogoutModal = true" class="flex flex-col items-center justify-center w-[20%] h-full text-red-400 hover:text-red-500 transition-colors cursor-pointer">
           <svg class="w-6 h-6 mb-1 transition-transform duration-300 active:scale-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
           <span class="text-[9px] font-extrabold tracking-wide">ចាកចេញ</span>
         </div>
       </div>
     </nav>
+
+    <transition enter-active-class="transition duration-300 ease-out" enter-from-class="opacity-0" enter-to-class="opacity-100" leave-active-class="transition duration-200 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
+      <div v-if="showLogoutModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center px-4">
+        <div class="bg-white rounded-[2rem] p-6 w-full max-w-[320px] shadow-2xl animate-in zoom-in-95 duration-200">
+          
+          <div class="w-14 h-14 rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-5 border-4 border-white shadow-sm">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+          </div>
+          
+          <h3 class="text-lg font-black text-slate-800 text-center mb-2">តើអ្នកចង់ចាកចេញមែនទេ?</h3>
+          <p class="text-[11px] font-bold text-slate-500 text-center mb-6">អ្នកនឹងត្រូវចូលគណនីម្តងទៀតនៅពេលក្រោយ។</p>
+          
+          <div class="flex gap-2.5">
+            <button @click="showLogoutModal = false" class="flex-1 py-3.5 bg-slate-100 text-slate-600 rounded-xl text-xs font-black hover:bg-slate-200 transition-colors">បោះបង់</button>
+            <button @click="confirmLogout" class="flex-1 py-3.5 bg-red-500 text-white rounded-xl text-xs font-black hover:bg-red-600 transition-colors shadow-md shadow-red-200">ចាកចេញ</button>
+          </div>
+          
+        </div>
+      </div>
+    </transition>
 
   </div>
 </template>
@@ -136,15 +156,13 @@ const router = useRouter();
 const route = useRoute();
 const toast = useToast();
 
-// ទាញយក Role ពី LocalStorage
 const userRole = ref(localStorage.getItem('userRole'));
+const showLogoutModal = ref(false); // 🌟 State សម្រាប់គ្រប់គ្រង Modal
 
-// តាមដានការផ្លាស់ប្តូរទំព័រ ដើម្បីអាប់ដេតសិទ្ធិ (Role) ឱ្យត្រូវជានិច្ច
 watch(() => route.path, () => {
   userRole.value = localStorage.getItem('userRole');
 });
 
-// មុខងារសម្រាប់ប៊ូតុង "ឆាប់ៗនេះ"
 const comingSoon = () => {
   toast.info("មុខងារនេះនឹងមានក្នុងពេលឆាប់ៗនេះ! 🚀", {
     timeout: 3000,
@@ -152,7 +170,9 @@ const comingSoon = () => {
   });
 };
 
-const handleLogout = () => {
+// 🌟 មុខងារថ្មី សម្រាប់ពេលយល់ព្រមលុបពិតប្រាកដ
+const confirmLogout = () => {
+  showLogoutModal.value = false; // បិទ Modal វិញ
   localStorage.clear();
   toast.success("អ្នកបានចាកចេញពីគណនី", { timeout: 2000 });
   router.push('/login');
@@ -160,12 +180,16 @@ const handleLogout = () => {
 </script>
 
 <style>
-/* លាក់ Scrollbar តែនៅតែអាច Scroll បាន */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+/* Font ខ្មែរ */
+@import url('https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;500;600;700&display=swap');
+* {
+  font-family: 'Kantumruy Pro', sans-serif;
 }
 </style>

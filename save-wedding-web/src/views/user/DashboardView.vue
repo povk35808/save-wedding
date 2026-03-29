@@ -1,87 +1,105 @@
 <template>
-  <div class="min-h-screen bg-[#f8fafc] pb-28 font-sans animate-in fade-in duration-300">
+  <div class="min-h-screen bg-[#f8fafc] pb-28 font-sans animate-in fade-in duration-300 relative">
     
     <div class="bg-gradient-to-br from-blue-600 to-indigo-600 pt-8 pb-16 px-5 rounded-b-[2rem] shadow-sm relative overflow-hidden">
       <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
-      
       <div class="relative z-10 max-w-md mx-auto">
         <h1 class="text-2xl md:text-3xl font-black text-white tracking-tight drop-shadow-sm">បញ្ជីទិន្នន័យចងដៃ</h1>
         <p class="text-blue-100/90 mt-0.5 text-[10px] font-black uppercase tracking-widest">Contributions</p>
       </div>
     </div>
 
-    <div class="max-w-md mx-auto px-4 -mt-7 relative z-30 mb-5">
-      <div class="bg-white p-1.5 rounded-[1.2rem] shadow-[0_8px_20px_-12px_rgba(0,0,0,0.15)] flex items-center gap-2 border border-slate-100 relative">
+    <div class="max-w-md mx-auto px-4 -mt-8 relative z-40 mb-5">
+      <div class="bg-white p-1.5 rounded-[1.5rem] shadow-[0_10px_30px_-15px_rgba(0,0,0,0.12)] flex items-center gap-2 border border-slate-100/50">
         
-        <div class="relative flex-1 group">
+        <div class="relative flex-1">
           <svg class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
           <input 
             v-model="searchQuery" 
-            class="w-full bg-slate-50/50 rounded-xl pl-10 pr-4 py-3 outline-none text-[13px] font-bold text-slate-700 placeholder-slate-400 transition-colors focus:bg-slate-100" 
+            class="w-full bg-slate-50/50 rounded-2xl pl-10 pr-4 py-3.5 outline-none text-[13px] font-bold text-slate-700 placeholder-slate-400 transition-colors focus:bg-slate-100/50" 
             placeholder="ស្វែងរកឈ្មោះ ឬកម្មវិធី..." 
           />
         </div>
         
-        <button @click="showFilter = !showFilter" :class="showFilter || filterDate ? 'bg-blue-50 text-blue-600' : 'bg-slate-50 text-slate-500'" class="w-11 h-11 rounded-xl flex items-center justify-center hover:bg-slate-100 transition-colors shrink-0 relative">
-          <span v-if="filterDate" class="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
-        </button>
+        <div ref="filterContainer" class="relative">
+          <button @click="showFilter = !showFilter" :class="showFilter || isFilterActive ? 'bg-blue-50 text-blue-600' : 'bg-slate-50 text-slate-500'" class="w-12 h-12 rounded-[1.2rem] flex items-center justify-center hover:bg-slate-100 transition-colors shrink-0 relative active:scale-95">
+            <span v-if="isFilterActive" class="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white shadow-sm"></span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+          </button>
 
-        <div v-if="showFilter" class="absolute top-[110%] right-0 w-64 bg-white rounded-2xl shadow-xl border border-slate-100 p-4 animate-in zoom-in-95 duration-200 origin-top-right">
-          <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2">ច្រោះតាមកាលបរិច្ឆេទ</label>
-          <input 
-            v-model="filterDate" 
-            type="date" 
-            class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm font-bold text-slate-700 outline-none focus:border-blue-500 transition-colors custom-date-input mb-3" 
-          />
-          <div class="flex gap-2">
-            <button @click="clearFilter" class="flex-1 py-2.5 bg-slate-100 text-slate-600 rounded-xl text-xs font-bold hover:bg-slate-200">សម្អាត</button>
-            <button @click="showFilter = false" class="flex-1 py-2.5 bg-blue-600 text-white rounded-xl text-xs font-bold hover:bg-blue-700 shadow-md shadow-blue-200">យល់ព្រម</button>
-          </div>
+          <transition enter-active-class="transition duration-200 ease-out" enter-from-class="transform scale-95 opacity-0" enter-to-class="transform scale-100 opacity-100" leave-active-class="transition duration-150 ease-in" leave-from-class="transform scale-100 opacity-100" leave-to-class="transform scale-95 opacity-0">
+            <div v-if="showFilter" class="absolute top-[115%] right-0 w-[320px] max-w-[90vw] bg-white rounded-[1.5rem] shadow-2xl border border-slate-100 p-4 z-50 origin-top-right">
+              
+              <div class="flex items-center justify-between mb-3">
+                <label class="block text-[11px] font-black text-slate-800 uppercase tracking-widest">ច្រោះទិន្នន័យ</label>
+                <button v-if="isFilterActive" @click="clearFilter" class="text-[9px] font-black text-red-500 bg-red-50 px-2.5 py-1.5 rounded-lg hover:bg-red-100 transition-colors">សម្អាត (CLEAR)</button>
+              </div>
+
+              <div class="flex bg-slate-100 p-1 rounded-xl mb-4">
+                <button @click="filterType = 'day'" :class="filterType === 'day' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500'" class="flex-1 py-2 text-[10px] font-black uppercase rounded-lg transition-all">ថ្ងៃ</button>
+                <button @click="filterType = 'month'" :class="filterType === 'month' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500'" class="flex-1 py-2 text-[10px] font-black uppercase rounded-lg transition-all">ខែ</button>
+                <button @click="filterType = 'year'" :class="filterType === 'year' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500'" class="flex-1 py-2 text-[10px] font-black uppercase rounded-lg transition-all">ឆ្នាំ</button>
+                <button @click="filterType = 'range'" :class="filterType === 'range' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500'" class="flex-1 py-2 text-[10px] font-black uppercase rounded-lg transition-all">ចន្លោះ</button>
+              </div>
+              
+              <div class="min-h-[50px]">
+                <input v-if="filterType === 'day'" v-model="filterDate" type="date" class="w-full bg-slate-50 border border-slate-100 rounded-xl p-3 text-sm font-bold text-slate-700 outline-none focus:border-blue-500 transition-colors custom-date-input" />
+                
+                <input v-if="filterType === 'month'" v-model="filterMonth" type="month" class="w-full bg-slate-50 border border-slate-100 rounded-xl p-3 text-sm font-bold text-slate-700 outline-none focus:border-blue-500 transition-colors custom-date-input" />
+                
+                <input v-if="filterType === 'year'" v-model="filterYear" type="number" placeholder="វាយបញ្ចូលឆ្នាំ (ឧទាហរណ៍: 2026)" class="w-full bg-slate-50 border border-slate-100 rounded-xl p-3 text-sm font-bold text-slate-700 outline-none focus:border-blue-500 transition-colors" />
+                
+                <div v-if="filterType === 'range'" class="flex items-center gap-2">
+                  <input v-model="filterStartDate" type="date" class="w-1/2 bg-slate-50 border border-slate-100 rounded-xl p-3 text-[11px] font-bold text-slate-700 outline-none custom-date-input" />
+                  <span class="text-slate-300 font-black">-</span>
+                  <input v-model="filterEndDate" type="date" class="w-1/2 bg-slate-50 border border-slate-100 rounded-xl p-3 text-[11px] font-bold text-slate-700 outline-none custom-date-input" />
+                </div>
+              </div>
+
+            </div>
+          </transition>
         </div>
 
       </div>
     </div>
 
-    <div class="max-w-md mx-auto px-4">
+    <div class="max-w-md mx-auto px-4 space-y-3 z-10 relative">
       <div v-if="paginatedData.length > 0">
         
         <div v-for="item in paginatedData" :key="item.id" class="bg-white rounded-[1.2rem] p-4 shadow-sm border border-slate-100/60 mb-3 hover:shadow-md transition-shadow">
           
           <div class="flex items-center justify-between gap-3 mb-4">
             <div class="flex items-center gap-3 min-w-0">
-              <div class="w-10 h-10 rounded-[0.8rem] bg-blue-50 text-blue-600 flex items-center justify-center font-black text-base shrink-0 uppercase border border-blue-100/50">
+              <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-black text-lg shrink-0 uppercase border border-blue-100/50">
                 {{ item.guest_name.charAt(0) }}
               </div>
               <div class="min-w-0">
                 <h3 class="text-[14px] font-black text-slate-800 truncate">{{ item.guest_name }}</h3>
-                <p class="text-[9px] text-slate-400 font-bold mt-0.5">{{ getTimeRemaining(item.created_at) }}</p>
+                <p class="text-[9px] text-slate-400 font-bold mt-0.5 uppercase tracking-widest">{{ getTimeRemaining(item.created_at) }}</p>
               </div>
             </div>
             
             <div class="flex gap-1.5 shrink-0">
-              <router-link :to="'/edit/'+item.id" class="w-8 h-8 rounded-full border border-slate-100 text-slate-400 hover:text-blue-500 hover:bg-blue-50 flex items-center justify-center transition-colors">
+              <router-link :to="'/edit/'+item.id" class="w-8 h-8 rounded-full border border-slate-100 text-slate-400 hover:text-blue-500 hover:bg-blue-50 flex items-center justify-center transition-colors active:scale-95">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
               </router-link>
-              <button @click="confirmDelete(item.id)" class="w-8 h-8 rounded-full border border-slate-100 text-slate-400 hover:text-red-500 hover:bg-red-50 flex items-center justify-center transition-colors">
+              <button @click="prepareDelete(item.id)" class="w-8 h-8 rounded-full border border-slate-100 text-slate-400 hover:text-red-500 hover:bg-red-50 flex items-center justify-center transition-colors active:scale-95">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
               </button>
             </div>
           </div>
 
-          <div class="flex justify-between items-center mb-4">
+          <div class="flex justify-between items-center bg-slate-50/50 p-3 rounded-[0.8rem] border border-slate-100/50 mb-3">
             <span class="text-[11px] font-bold text-slate-400">ទឹកប្រាក់</span>
             <div class="text-right flex items-baseline gap-1.5">
-              <span class="text-[10px] font-black uppercase text-slate-400">{{ item.currency === 'USD' ? 'USD' : 'KHR' }}</span>
+              <span class="text-[9px] font-black uppercase text-slate-400">{{ item.currency === 'USD' ? 'USD' : 'KHR' }}</span>
               <span class="text-xl font-black leading-none tracking-tight" :class="item.currency === 'USD' ? 'text-blue-600' : 'text-emerald-500'">
                 {{ formatCurrency(item.amount, item.currency) }}
               </span>
             </div>
           </div>
 
-          <div class="h-px bg-slate-100 w-full mb-3"></div>
-
-          <div class="space-y-2.5 px-0.5">
+          <div class="space-y-2 px-1">
             <div class="flex items-center gap-4">
               <div class="flex items-center gap-2 flex-1 min-w-0">
                 <div class="text-indigo-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15.546c.523 0 .974.276 1.167.683H20v.683a1.725 1.725 0 11-3.45 0v-.683h-.25c.193-.407.644-.683 1.167-.683a1.725 1.725 0 113.45 0zM12 21a9 9 0 110-18 9 9 0 010 18zm0-9a3 3 0 100-6 3 3 0 000 6z"></path></svg></div>
@@ -103,7 +121,7 @@
 
         <div ref="observerTarget" class="py-6 flex justify-center items-center">
           <svg v-if="displayLimit < filteredData.length" class="animate-spin h-6 w-6 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-          <span v-else-if="filteredData.length > 14" class="text-xs font-bold text-slate-400">អស់ទិន្នន័យហើយ</span>
+          <span v-else-if="filteredData.length > 14" class="text-[10px] font-bold text-slate-300 uppercase tracking-widest">អស់ទិន្នន័យហើយ</span>
         </div>
 
       </div>
@@ -117,15 +135,31 @@
 
     </div>
 
-    <router-link to="/add" class="md:hidden fixed bottom-6 right-5 z-[100] w-[52px] h-[52px] bg-blue-600 text-white rounded-full flex items-center justify-center shadow-[0_8px_20px_rgba(37,99,235,0.4)] active:scale-95 transition-transform border-[2.5px] border-white">
+    <router-link to="/add" class="md:hidden fixed bottom-6 right-5 z-[80] w-[52px] h-[52px] bg-blue-600 text-white rounded-full flex items-center justify-center shadow-[0_8px_20px_rgba(37,99,235,0.4)] active:scale-95 transition-transform border-[2.5px] border-white">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
     </router-link>
+
+    <transition enter-active-class="transition duration-300 ease-out" enter-from-class="opacity-0" enter-to-class="opacity-100" leave-active-class="transition duration-200 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
+      <div v-if="showDeleteModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center px-4">
+        <div class="bg-white rounded-[2rem] p-6 w-full max-w-[320px] shadow-2xl animate-in zoom-in-95 duration-200">
+          <div class="w-14 h-14 rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-5 border-4 border-white shadow-sm">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+          </div>
+          <h3 class="text-lg font-black text-slate-800 text-center mb-2">តើអ្នកចង់លុបមែនទេ?</h3>
+          <p class="text-xs font-bold text-slate-500 text-center mb-6">ទិន្នន័យនេះនឹងត្រូវលុបជាអចិន្ត្រៃយ៍។</p>
+          <div class="flex gap-2.5">
+            <button @click="showDeleteModal = false" class="flex-1 py-3 bg-slate-100 text-slate-600 rounded-xl text-xs font-black hover:bg-slate-200 transition-colors">បោះបង់</button>
+            <button @click="finalizeDelete" class="flex-1 py-3 bg-red-500 text-white rounded-xl text-xs font-black hover:bg-red-600 transition-colors shadow-md shadow-red-200">យល់ព្រមលុប</button>
+          </div>
+        </div>
+      </div>
+    </transition>
 
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import axios from 'axios';
 import { useToast } from "vue-toastification";
 
@@ -134,22 +168,63 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 const contributionData = ref([]);
 const searchQuery = ref('');
+
+// 🌟 Advanced Filter State
+const filterType = ref('day'); // 'day', 'month', 'year', 'range'
 const filterDate = ref('');
+const filterMonth = ref('');
+const filterYear = ref('');
+const filterStartDate = ref('');
+const filterEndDate = ref('');
 const showFilter = ref(false);
+const filterContainer = ref(null);
+
+// 🌟 Delete Modal State
+const showDeleteModal = ref(false);
+const itemToDeleteId = ref(null);
 
 // 🌟 Infinite Scroll State
 const displayLimit = ref(14);
 const observerTarget = ref(null);
 
 // Reset limit រាល់ពេល Search ឬ Filter
-watch([searchQuery, filterDate], () => {
+watch([searchQuery, filterDate, filterMonth, filterYear, filterStartDate, filterEndDate], () => {
   displayLimit.value = 14;
+});
+
+// 🌟 Auto-Hide Logic ដ៏វៃឆ្លាត
+watch([filterDate, filterMonth], ([newDate, newMonth]) => {
+  // បើរើសថ្ងៃ ឬខែរួច លាក់ផ្ទាំង Filter ស្វ័យប្រវត្តិ
+  if (newDate || newMonth) showFilter.value = false;
+});
+watch(filterYear, (newYear) => {
+  // បើវាយឆ្នាំបាន ៤ ខ្ទង់ លាក់ផ្ទាំង
+  if (newYear && String(newYear).length === 4) showFilter.value = false;
+});
+watch([filterStartDate, filterEndDate], ([start, end]) => {
+  // បើរើស Range ទាំងដើមទាំងចុងរួច លាក់ផ្ទាំង
+  if (start && end) showFilter.value = false;
 });
 
 const clearFilter = () => {
   filterDate.value = '';
+  filterMonth.value = '';
+  filterYear.value = '';
+  filterStartDate.value = '';
+  filterEndDate.value = '';
   showFilter.value = false;
 };
+
+// បិទផ្ទាំងពេលចុចកន្លែងផ្សេងលើអេក្រង់
+const handleClickOutside = (event) => {
+  if (showFilter.value && filterContainer.value && !filterContainer.value.contains(event.target)) {
+    showFilter.value = false;
+  }
+};
+
+const isFilterActive = computed(() => {
+  return filterDate.value || filterMonth.value || filterYear.value || (filterStartDate.value && filterEndDate.value);
+});
 
 // ទាញយកទិន្នន័យ
 const fetchContributions = async () => {
@@ -163,47 +238,60 @@ const fetchContributions = async () => {
 
 onMounted(() => {
   fetchContributions();
+  document.addEventListener('click', handleClickOutside);
 
-  // 🌟 បង្កើត Intersection Observer សម្រាប់ទាញយក ១៤ ទៀតពេលអូសដល់ក្រោម
   const observer = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting && displayLimit.value < filteredData.value.length) {
-      // បន្ថែម 14 កាតទៀតពេលអូសដល់ក្រោម
       setTimeout(() => {
         displayLimit.value += 14;
-      }, 300); // ដាក់ Delay បន្តិចឱ្យមានអារម្មណ៍ Smooth ពេល Loading
+      }, 200); 
     }
   }, { threshold: 1.0 });
 
-  // ភ្ជាប់ Observer ទៅកាន់ Element នៅខាងក្រោមបញ្ជី
   if (observerTarget.value) {
     observer.observe(observerTarget.value);
   }
 });
 
-// ស្វែងរក និង ច្រោះ (Filter)
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
+
+// ស្វែងរក និង ច្រោះកម្រិតខ្ពស់
 const filteredData = computed(() => {
   return contributionData.value.filter(item => {
-    // ស្វែងរកឈ្មោះ
     const matchesSearch = searchQuery.value 
       ? item.guest_name.toLowerCase().includes(searchQuery.value.toLowerCase()) || 
         item.event_name.toLowerCase().includes(searchQuery.value.toLowerCase())
       : true;
     
-    // ច្រោះថ្ងៃខែ
-    const matchesDate = filterDate.value 
-      ? new Date(item.event_date).toISOString().split('T')[0] === filterDate.value 
-      : true;
+    if (!matchesSearch) return false;
 
-    return matchesSearch && matchesDate;
+    const itemDateStr = new Date(item.event_date).toISOString().split('T')[0];
+    const itemYear = itemDateStr.substring(0, 4);
+    const itemMonth = itemDateStr.substring(0, 7);
+
+    if (filterType.value === 'day' && filterDate.value) {
+      return itemDateStr === filterDate.value;
+    }
+    if (filterType.value === 'month' && filterMonth.value) {
+      return itemMonth === filterMonth.value;
+    }
+    if (filterType.value === 'year' && filterYear.value) {
+      return itemYear === String(filterYear.value);
+    }
+    if (filterType.value === 'range' && filterStartDate.value && filterEndDate.value) {
+      return itemDateStr >= filterStartDate.value && itemDateStr <= filterEndDate.value;
+    }
+
+    return true;
   });
 });
 
-// 🌟 ទិន្នន័យដែលត្រូវបង្ហាញ (កាត់ត្រឹម Limit ១៤)
 const paginatedData = computed(() => {
   return filteredData.value.slice(0, displayLimit.value);
 });
 
-// Format លុយ
 const formatCurrency = (amount, currency) => {
   if (currency === 'USD') {
     return parseFloat(amount).toFixed(2);
@@ -212,7 +300,6 @@ const formatCurrency = (amount, currency) => {
   }
 };
 
-// ពេលវេលា
 const getTimeRemaining = (dateString) => {
   const seconds = Math.floor((new Date() - new Date(dateString)) / 1000);
   let interval = seconds / 31536000;
@@ -228,32 +315,32 @@ const getTimeRemaining = (dateString) => {
   return "ទើបបញ្ចូល";
 };
 
-// លុប
-const confirmDelete = (id) => {
-  if (window.confirm("តើអ្នកពិតជាចង់លុបទិន្នន័យនេះមែនទេ?")) {
-    deleteContribution(id);
-  }
+const prepareDelete = (id) => {
+  itemToDeleteId.value = id;
+  showDeleteModal.value = true;
 };
 
-const deleteContribution = async (id) => {
+const finalizeDelete = async () => {
+  if (!itemToDeleteId.value) return;
   try {
-    await axios.delete(`${API_URL}/contributions/${id}`);
-    toast.success("បានលុបជោគជ័យ! 🗑️");
-    fetchContributions(); 
+    await axios.delete(`${API_URL}/contributions/${itemToDeleteId.value}`);
+    toast.success("បានលុបជោគជ័យ! 🗑️", { timeout: 2000 });
+    fetchContributions();
   } catch (error) {
     toast.error("មានបញ្ហាក្នុងការលុប!");
+  } finally {
+    showDeleteModal.value = false;
+    itemToDeleteId.value = null;
   }
 };
 </script>
 
 <style>
-/* Font ខ្មែរឱ្យច្បាស់ និងរលោង */
 @import url('https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;500;600;700&display=swap');
 * {
   font-family: 'Kantumruy Pro', sans-serif;
 }
 
-/* Custom UI Date Picker ឱ្យស្អាត */
 .custom-date-input::-webkit-calendar-picker-indicator {
   cursor: pointer;
   opacity: 0.6;
