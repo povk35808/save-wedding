@@ -30,7 +30,7 @@
           <div class="space-y-1.5">
             <div class="flex justify-between items-center ml-1">
                <label class="block text-xs font-bold text-gray-700">លេខសម្ងាត់</label>
-               <a href="#" class="text-[11px] font-bold text-blue-600 hover:text-blue-800 transition-colors">ភ្លេចលេខសម្ងាត់?</a>
+               <a href="https://t.me/MMKDaro" target="_blank" class="text-[11px] font-bold text-blue-600 hover:text-blue-800 transition-colors">ភ្លេចលេខសម្ងាត់?</a>
             </div>
             <div class="relative">
                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
@@ -53,7 +53,7 @@
       </div>
 
       <p class="text-center text-xs font-bold text-gray-500 mt-8">
-        មិនទាន់មានគណនី? <a href="#" class="text-blue-600 hover:underline">ទាក់ទងអ្នកគ្រប់គ្រង</a>
+        មិនទាន់មានគណនី? <a href="https://t.me/MMKDaro" target="_blank" class="text-blue-600 hover:underline">ទាក់ទងអ្នកគ្រប់គ្រង</a>
       </p>
     </div>
   </div>
@@ -82,22 +82,42 @@ const handleLogin = async () => {
     
     localStorage.setItem('isAuthenticated', 'true');
     localStorage.setItem('token', response.data.token);
-    localStorage.setItem('userRole', response.data.user.role);
-    localStorage.setItem('username', response.data.user.username);
     
-    toast.success(`សួស្តី ${response.data.user.username}!`, { icon: "👋" });
+    if (response.data.user) {
+      const u = response.data.user;
+      
+      localStorage.setItem('userId', u.id || '');
+      localStorage.setItem('userRole', u.role || 'user');
+      localStorage.setItem('username', u.username || u.name || '');
+      
+      // 🌟 សំខាន់៖ ឈ្មោះត្រូវគ្នា ១០០% ជាមួយ Backend (record_limit & expiry_date)
+      localStorage.setItem('lines', u.record_limit || 100);
+      localStorage.setItem('expire_date', u.expiry_date || '2030-01-01');
+      localStorage.setItem('created_at', u.created_at || new Date().toISOString());
+      
+      // Save User ទាំងមូល
+      localStorage.setItem('user_profile', JSON.stringify(u));
+    }
+    
+    toast.success(`សួស្តី ${response.data.user?.username || ''}!`, { icon: "👋" });
 
-    // 🌟 កន្លែងកែប្រែថ្មី៖ បែងចែកទំព័រពេល Login ជោគជ័យ
-    if (response.data.user.role === 'owner') {
-      router.push('/users'); // បើជា Owner ឱ្យលោតទៅទំព័រគ្រប់គ្រង
+    if (response.data.user?.role === 'owner') {
+      router.push('/users'); 
     } else {
-      router.push('/'); // បើជា User ឱ្យលោតទៅទំព័រដើម
+      router.push('/'); 
     }
     
   } catch (error) {
-    toast.error(error.response?.data?.error || "មានបញ្ហាក្នុងការភ្ជាប់!");
+    toast.error(error.response?.data?.error || error.response?.data?.message || "មានបញ្ហាក្នុងការភ្ជាប់!");
   } finally {
     isLoading.value = false;
   }
 };
 </script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;500;600;700&display=swap');
+* {
+  font-family: 'Kantumruy Pro', sans-serif;
+}
+</style>
