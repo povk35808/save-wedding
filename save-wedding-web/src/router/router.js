@@ -6,6 +6,7 @@ import DashboardView from '../views/user/DashboardView.vue'
 import AddContributionView from '../views/user/AddContributionView.vue'
 import EditContributionView from '../views/user/EditContributionView.vue' // 🌟 បានបន្ថែមការទាញយក File ទំព័រកែប្រែ
 import ManageUsersView from '../views/owner/ManageUsersView.vue'
+import ProfileView from '../views/user/ProfileView.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -15,8 +16,8 @@ const router = createRouter({
     // ផ្លូវសម្រាប់ User
     { path: '/', name: 'home', component: DashboardView, meta: { requiresAuth: true, role: 'user' } },
     { path: '/add', name: 'add', component: AddContributionView, meta: { requiresAuth: true, role: 'user' } },
-    { path: '/edit/:id', name: 'edit', component: EditContributionView, meta: { requiresAuth: true, role: 'user' } }, // 🌟 បានបន្ថែម Route សម្រាប់កែប្រែទិន្នន័យ
-    
+    { path: '/edit/:id', name: 'edit', component: EditContributionView, meta: { requiresAuth: true, role: 'user' } },
+    {path: '/profile',name: 'profile',component: ProfileView} ,
     // ផ្លូវសម្រាប់ Owner
     { path: '/users', name: 'users', component: ManageUsersView, meta: { requiresAuth: true, role: 'owner' } }
   ]

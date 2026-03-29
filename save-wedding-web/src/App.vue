@@ -52,13 +52,10 @@
           <span class="text-[9px] bg-orange-100 text-orange-600 px-2 py-1 rounded-md">ឆាប់ៗនេះ</span>
         </button>
 
-        <button @click="comingSoon" class="w-full flex justify-between items-center gap-4 px-4 py-3.5 rounded-2xl text-gray-500 font-bold hover:bg-gray-50 transition-all">
-          <div class="flex items-center gap-4">
-            <svg class="w-6 h-6 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-            គណនីខ្ញុំ
-          </div>
-          <span class="text-[9px] bg-orange-100 text-orange-600 px-2 py-1 rounded-md">ឆាប់ៗនេះ</span>
-        </button>
+        <router-link to="/profile" class="flex items-center gap-4 px-4 py-3.5 rounded-2xl text-gray-500 font-bold hover:bg-gray-50 hover:text-blue-600 transition-all" active-class="bg-blue-50/70 text-blue-600 shadow-sm border border-blue-100/50">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+          គណនីខ្ញុំ
+        </router-link>
       </nav>
 
       <div class="p-5 border-t border-gray-100">
@@ -92,11 +89,11 @@
            <span class="text-[9px] font-extrabold tracking-wide">គ្រប់គ្រង</span>
         </router-link>
 
-        <div v-if="userRole === 'user'" @click="comingSoon" class="flex flex-col items-center justify-center w-[20%] h-full text-gray-400 hover:text-blue-600 transition-colors cursor-pointer relative">
-           <span class="absolute top-1 right-2 w-2 h-2 bg-orange-400 rounded-full border border-white animate-pulse"></span>
+        <router-link v-if="userRole === 'user'" to="/profile" class="flex flex-col items-center justify-center w-[20%] h-full text-gray-400 hover:text-blue-600 transition-colors relative" active-class="text-blue-600">
            <svg class="w-6 h-6 mb-1 transition-transform duration-300 active:scale-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
            <span class="text-[9px] font-extrabold tracking-wide">គណនីខ្ញុំ</span>
-        </div>
+        </router-link>
+        
         <div v-if="userRole === 'owner'" @click="comingSoon" class="flex flex-col items-center justify-center w-[20%] h-full text-gray-400 hover:text-blue-600 transition-colors cursor-pointer relative">
            <span class="absolute top-1 right-2 w-2 h-2 bg-orange-400 rounded-full border border-white animate-pulse"></span>
            <svg class="w-6 h-6 mb-1 transition-transform duration-300 active:scale-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
@@ -157,7 +154,7 @@ const route = useRoute();
 const toast = useToast();
 
 const userRole = ref(localStorage.getItem('userRole'));
-const showLogoutModal = ref(false); // 🌟 State សម្រាប់គ្រប់គ្រង Modal
+const showLogoutModal = ref(false);
 
 watch(() => route.path, () => {
   userRole.value = localStorage.getItem('userRole');
@@ -170,9 +167,8 @@ const comingSoon = () => {
   });
 };
 
-// 🌟 មុខងារថ្មី សម្រាប់ពេលយល់ព្រមលុបពិតប្រាកដ
 const confirmLogout = () => {
-  showLogoutModal.value = false; // បិទ Modal វិញ
+  showLogoutModal.value = false;
   localStorage.clear();
   toast.success("អ្នកបានចាកចេញពីគណនី", { timeout: 2000 });
   router.push('/login');
@@ -180,14 +176,12 @@ const confirmLogout = () => {
 </script>
 
 <style>
-/* Font ខ្មែរ (ត្រូវតែនៅលើគេបង្អស់) */
 @import url('https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;500;600;700&display=swap');
 
 * {
   font-family: 'Kantumruy Pro', sans-serif;
 }
 
-/* លាក់ Scrollbar តែនៅតែអាច Scroll បាន */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
