@@ -180,16 +180,19 @@ const confirmLogout = () => {
 </script>
 
 <style>
+/* Font ខ្មែរ (ត្រូវតែនៅលើគេបង្អស់) */
+@import url('https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;500;600;700&display=swap');
+
+* {
+  font-family: 'Kantumruy Pro', sans-serif;
+}
+
+/* លាក់ Scrollbar តែនៅតែអាច Scroll បាន */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
-}
-/* Font ខ្មែរ */
-@import url('https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;500;600;700&display=swap');
-* {
-  font-family: 'Kantumruy Pro', sans-serif;
 }
 </style>
