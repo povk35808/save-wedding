@@ -29,13 +29,13 @@
       <div v-for="user in filteredUsers" :key="user.id" class="group bg-white rounded-[2.5rem] p-8 border border-slate-50 shadow-[0_10px_40px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_50px_rgba(79,70,229,0.1)] transition-all duration-500 relative flex flex-col">
         
         <div class="absolute top-8 right-8">
-  <div v-if="user.is_active === true" class="px-3 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-black rounded-full uppercase tracking-widest border border-emerald-100 flex items-center gap-1.5">
-    <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> សកម្ម
-  </div>
-  <div v-else class="px-3 py-1 bg-red-50 text-red-600 text-[10px] font-black rounded-full uppercase tracking-widest border border-red-100 flex items-center gap-1.5">
-    <span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span> ផ្អាក
-  </div>
-</div>
+          <div v-if="user.is_active === true" class="px-3 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-black rounded-full uppercase tracking-widest border border-emerald-100 flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> សកម្ម
+          </div>
+          <div v-else class="px-3 py-1 bg-red-50 text-red-600 text-[10px] font-black rounded-full uppercase tracking-widest border border-red-100 flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span> ផ្អាក
+          </div>
+        </div>
 
         <div class="flex flex-col items-center text-center mb-8">
           <div class="w-20 h-20 rounded-[2rem] bg-slate-50 flex items-center justify-center text-slate-400 mb-5 border border-slate-100 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors duration-500 font-black text-3xl shadow-inner">
@@ -73,19 +73,19 @@
           </button>
           
           <button @click="toggleStatus(user)" 
-  class="py-3 rounded-2xl font-black text-[11px] transition-all duration-300 flex flex-col items-center gap-1 shadow-md active:scale-95" 
-  :class="user.is_active === true ? 'bg-orange-50 text-orange-500 border border-orange-100' : 'bg-emerald-500 text-white shadow-emerald-200'">
-  
-  <svg v-if="user.is_active === true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
-  </svg>
-  
-  <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
-  </svg>
+          class="py-3 rounded-2xl font-black text-[11px] transition-all duration-300 flex flex-col items-center gap-1 shadow-md active:scale-95" 
+          :class="user.is_active === true ? 'bg-orange-50 text-orange-500 border border-orange-100' : 'bg-emerald-500 text-white shadow-emerald-200'">
+          
+          <svg v-if="user.is_active === true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
+          </svg>
+          
+          <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+          </svg>
 
-  {{ user.is_active === true ? 'ផ្អាក' : 'បើកវិញ' }}
-</button>
+          {{ user.is_active === true ? 'ផ្អាក' : 'បើកវិញ' }}
+          </button>
 
           <button @click="confirmDelete(user)" class="py-3 bg-white border border-slate-100 hover:bg-red-500 hover:text-white text-red-500 rounded-2xl font-black text-[11px] transition-all duration-300 flex flex-col items-center gap-1 shadow-sm">
              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg> លុប
@@ -205,6 +205,14 @@ const form = ref({ id: null, username: '', password: '', priceAmount: 0, priceCu
 const limitType = ref('record');
 const limitValue = ref(200); 
 
+// 🌟 បង្កើតមុខងារជំនួយសម្រាប់ចាប់យក Token (ដោះស្រាយបញ្ហា 401/403)
+const getAuthHeader = () => {
+  const token = localStorage.getItem('token') || '';
+  return {
+    headers: { Authorization: `Bearer ${token}` }
+  };
+};
+
 const filteredUsers = computed(() => {
   if (!searchQuery.value) return users.value;
   return users.value.filter(u => u.username.toLowerCase().includes(searchQuery.value.toLowerCase()));
@@ -221,7 +229,8 @@ const getTimeRemaining = (dateString) => {
 
 const fetchUsers = async () => {
   try {
-    const response = await axios.get(`${API_URL}/users`);
+    // បញ្ចូល getAuthHeader() ទៅក្នុង axios.get
+    const response = await axios.get(`${API_URL}/users`, getAuthHeader());
     users.value = response.data;
   } catch (error) { toast.error("មិនអាចទាញយកទិន្នន័យបានទេ"); }
 };
@@ -254,10 +263,12 @@ const saveUser = async () => {
   try {
     if (isEditMode.value) {
       if(!payload.password) delete payload.password; 
-      await axios.put(`${API_URL}/users/${form.value.id}`, payload);
+      // បញ្ចូល getAuthHeader() ទៅក្នុង axios.put
+      await axios.put(`${API_URL}/users/${form.value.id}`, payload, getAuthHeader());
       toast.success("កែប្រែគណនីជោគជ័យ!", { icon: "✏️" });
     } else {
-      await axios.post(`${API_URL}/users`, payload);
+      // បញ្ចូល getAuthHeader() ទៅក្នុង axios.post
+      await axios.post(`${API_URL}/users`, payload, getAuthHeader());
       toast.success("បង្កើតគណនីជោគជ័យ!", { icon: "🎉" });
     }
     isModalOpen.value = false; fetchUsers(); 
@@ -266,21 +277,17 @@ const saveUser = async () => {
 };
 
 const toggleStatus = async (user) => {
-  // ១. កំណត់តម្លៃថ្មីដែលត្រូវប្តូរ (បើ true ទៅ false, បើ false ទៅ true)
   const newStatus = !(user.is_active === true); 
   
   try {
-    // ២. ហៅ API ទៅ Backend
-    await axios.patch(`${API_URL}/users/${user.id}/status`, { is_active: newStatus });
+    // បញ្ចូល getAuthHeader() ទៅក្នុង axios.patch
+    await axios.patch(`${API_URL}/users/${user.id}/status`, { is_active: newStatus }, getAuthHeader());
     
-    // 🌟 ៣. UPDATE FRONTEND STATE ភ្លាមៗ (សំខាន់បំផុត)
-    // យើងស្វែងរក User ក្នុង Array `users.value` ហើយប្តូរតម្លៃវាផ្ទាល់តែម្តង
     const index = users.value.findIndex(u => u.id === user.id);
     if (index !== -1) {
       users.value[index].is_active = newStatus;
     }
 
-    // ៤. បង្ហាញការជូនដំណឹង
     if (newStatus) {
       toast.success(`បានបើកដំណើរការគណនី "${user.username}" ឡើងវិញ! ✅`);
     } else {
@@ -300,7 +307,8 @@ const confirmDelete = (user) => {
 
 const proceedDelete = async () => {
   try {
-    await axios.delete(`${API_URL}/users/${userToDelete.value.id}`);
+    // បញ្ចូល getAuthHeader() ទៅក្នុង axios.delete
+    await axios.delete(`${API_URL}/users/${userToDelete.value.id}`, getAuthHeader());
     toast.success("លុបគណនីជោគជ័យ!"); fetchUsers();
   } catch (error) { toast.error("បរាជ័យ!"); }
   finally { isDeleteModalOpen.value = false; userToDelete.value = null; }
