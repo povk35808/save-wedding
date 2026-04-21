@@ -239,6 +239,14 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 const contributionData = ref([]);
 const searchQuery = ref('');
 
+// 🌟 បង្កើតមុខងារទាញយក Token ពី LocalStorage (ដោះស្រាយបញ្ហា Error 403)
+const getAuthHeader = () => {
+  const token = localStorage.getItem('token') || '';
+  return {
+    headers: { Authorization: `Bearer ${token}` }
+  };
+};
+
 // 🌟 Advanced Date Filter State
 const filterType = ref('day'); 
 const filterDate = ref('');
@@ -300,7 +308,8 @@ const isDateFilterActive = computed(() => {
 
 const fetchContributions = async () => {
   try {
-    const response = await axios.get(`${API_URL}/contributions`);
+    // 🌟 បន្ថែម getAuthHeader() នៅពេលទាញយកទិន្នន័យ
+    const response = await axios.get(`${API_URL}/contributions`, getAuthHeader());
     contributionData.value = response.data;
   } catch (error) {
     toast.error("មិនអាចទាញយកទិន្នន័យបានទេ");
@@ -450,7 +459,8 @@ const prepareDelete = (id) => {
 const finalizeDelete = async () => {
   if (!itemToDeleteId.value) return;
   try {
-    await axios.delete(`${API_URL}/contributions/${itemToDeleteId.value}`);
+    // 🌟 បន្ថែម getAuthHeader() នៅពេលលុបទិន្នន័យ
+    await axios.delete(`${API_URL}/contributions/${itemToDeleteId.value}`, getAuthHeader());
     toast.success("បានលុបជោគជ័យ! 🗑️", { timeout: 2000 });
     fetchContributions();
   } catch (error) {
